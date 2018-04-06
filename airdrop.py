@@ -52,8 +52,10 @@ if __name__ == '__main__':
 
             if (len(recipient_batch) == batch_size):
                 airdrop_batch(recipient_batch, value_batch)
+                # reset batch
                 recipient_batch = []
                 value_batch = []
+                nonce += 1
 
         # airdrop all the left overs
         airdrop_batch(recipient_batch, value_batch)
