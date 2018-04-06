@@ -3,13 +3,13 @@ pragma solidity ^0.4.15;
 import "https://github.com/OpenZeppelin/zeppelin-solidity/contracts/ownership/Ownable.sol";
 import "https://github.com/OpenZeppelin/zeppelin-solidity/contracts/token/ERC20/ERC20.sol";
 
-contract Airdroper is Ownable {
+contract Airdropper is Ownable {
     address tokenContract;
-    
-    function Airdroper(address _tokenContract) Ownable() {
+
+    function Airdropper(address _tokenContract) Ownable() {
         tokenContract = _tokenContract;
     }
-    
+
     /** Transfer ERC20 compatible token to recipeients of airdrop. The index of each recipient should
      *  have a cooresponding value in _values. Note that this is O(n) so trying to
      *  airdrop to too many recipients in one shot may exceed gas limit.
@@ -21,5 +21,5 @@ contract Airdroper is Ownable {
             ERC20(tokenContract).transfer(_recipients[i], _values[i]);
         }
     }
-    
+
 }

@@ -30,7 +30,7 @@ e.g.
 
 - Run script
 ```
-python airdrop.py <youfile>.csv
+python airdrop.py <your_file>.csv
 ```
 
 ## Notes:
