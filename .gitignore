@@ -1,4 +1,8 @@
-config.py
 *.pyc
 .venv
 __pycache__
+
+config.py
+*.csv
+*.session
+*.json
