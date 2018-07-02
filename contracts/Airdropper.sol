@@ -4,9 +4,9 @@ import "https://github.com/OpenZeppelin/zeppelin-solidity/contracts/ownership/Ow
 import "https://github.com/OpenZeppelin/zeppelin-solidity/contracts/token/ERC20/ERC20.sol";
 
 contract Airdropper is Ownable {
-    address tokenContract;
+    ERC20 tokenContract;
 
-    function Airdropper(address _tokenContract) Ownable() {
+    function Airdropper(ERC20 _tokenContract) public Ownable() {
         tokenContract = _tokenContract;
     }
 
@@ -16,9 +16,9 @@ contract Airdropper is Ownable {
      *  @param _recipients The array of recipient addresses
      *  @param _values The amount of PNK to send to recipeient i
      */
-    function airdropTokens(address[] _recipients, uint[] _values) onlyOwner {
+    function airdropTokens(address[] _recipients, uint[] _values) public onlyOwner {
         for (uint i = 0; i < _recipients.length; i++) {
-            ERC20(tokenContract).transfer(_recipients[i], _values[i]);
+            tokenContract.transfer(_recipients[i], _values[i]);
         }
     }
 
