@@ -2,6 +2,8 @@ import csv
 import sys
 import argparse
 
+from web3 import Web3
+
 from config import config
 from tools.twitter import get_followers_screen_names
 from tools.telegram import get_telegram_usernames
@@ -61,7 +63,10 @@ if __name__ == "__main__":
 
             if twitter_name in twitter_usernames:
                 if telegram_name in telegram_followers:
-                    eth_address = row[6]
-                    airdrop_writer.writerow([eth_address, config['TOKENS_PER_ADDRESS']])
+                    # remove whitespace
+                    eth_address = row[6].strip()
+                    isValidAddress = Web3.isAddress(eth_address)
+                    if isValidAddress:
+                        airdrop_writer.writerow([Web3.toChecksumAddress(eth_address), config['TOKENS_PER_ADDRESS']])
 
     print('Done! Generated airdrop.csv')

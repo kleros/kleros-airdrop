@@ -1,16 +1,24 @@
 import sys
 import csv
 import json
+import argparse
 
 from web3 import Web3, HTTPProvider
 from config import config
 from tools.txs import sign_tx, get_address_from_key
 
 if __name__ == '__main__':
-    if len(sys.argv) < 2:
-        raise RuntimeError('Missing required parameter: path/to/airdrop.csv')
+    ap = argparse.ArgumentParser()
+    ap.add_argument('-c', '--csv', required = True, help = 'Recipients CSV with address,value')
+    ap.add_argument('-s', '--start', required = False, help = 'Index to start airdrop')
+    ap.add_argument('-e', '--end', required = False, help = 'Index to end airdrop')
+
+    args = vars(ap.parse_args())
     # csv for airdrop
-    airdrop_csv = sys.argv[1]
+    airdrop_csv = args['csv']
+    # place to start and end
+    start_index = int(args.get('start', 0))
+    end_index = int(args.get('end')) if args.get('end') else None
     # size of each tx batch
     batch_size = config['BATCH_SIZE']
     # web3
@@ -35,7 +43,7 @@ if __name__ == '__main__':
             values
         ).buildTransaction({
             'gas': config['GAS'],
-            'gas_price': w3.toWei('1', 'gwei'),
+            'gasPrice': w3.toWei('1', 'gwei'),
             'nonce': nonce,
         })
 
@@ -46,7 +54,11 @@ if __name__ == '__main__':
 
     with open(airdrop_csv) as f:
         reader = csv.reader(f)
-        for row in reader:
+        for i, row in enumerate(reader):
+            if i < start_index:
+                continue
+            if end_index and i > end_index:
+                break
             recipient_batch.append(row[0])
             value_batch.append(int(row[1]))
 
@@ -58,4 +70,5 @@ if __name__ == '__main__':
                 nonce += 1
 
         # airdrop all the left overs
-        airdrop_batch(recipient_batch, value_batch)
+        if len(recipient_batch):
+            airdrop_batch(recipient_batch, value_batch)
